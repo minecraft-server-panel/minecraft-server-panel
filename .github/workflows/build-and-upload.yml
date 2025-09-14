@@ -1,0 +1,60 @@
+name: Build and Upload Packages
+
+on:
+  push:
+    branches:
+      - dev/**
+      - releases/**
+  pull_request:
+    branches:
+      - dev/**
+      - releases/**
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [22.x]
+        
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - name: Install pnpm
+      run: npm install -g pnpm@10.16.1
+    
+    - name: Install dependencies
+      run: pnpm install
+    
+    - name: Get version from package.json
+      id: version
+      run: |
+        VERSION=$(node -p "require('./package.json').version")
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+    
+    - name: Run all-in-one package script
+      run: pnpm run package:all-in-one
+      
+    - name: Run separate package script
+      run: pnpm run package:separate
+      
+    - name: Upload all-in-one package
+      uses: actions/upload-artifact@v4
+      with:
+        name: all-in-one-package-v${{ env.VERSION }}-build.${{ github.run_number }}
+        path: scripts/release/all-in-one/
+        if-no-files-found: error
+        
+    - name: Upload separate package
+      uses: actions/upload-artifact@v4
+      with:
+        name: separate-package-v${{ env.VERSION }}-build.${{ github.run_number }}
+        path: scripts/release/separate/
+        if-no-files-found: error
