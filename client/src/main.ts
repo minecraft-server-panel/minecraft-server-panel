@@ -1,15 +1,11 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import {createApp} from 'vue'
+import './style.scss'
+import App from './App.vue';
+import ArcoVue from '@arco-design/web-vue';
+import ArcoVueIcon from '@arco-design/web-vue/es/icon';
+import '@arco-design/web-vue/dist/arco.css';
 
-// 启动时连接WebSocket服务
-import apiService from './services/api';
-import authService from './services/authService';
-
-// 检查用户是否已认证
-if (authService.isAuthenticated()) {
-  // 连接到WebSocket服务
-  apiService.connectWebSocket();
-}
-
-createApp(App).mount('#app')
+const app = createApp(App);
+app.use(ArcoVue);
+app.use(ArcoVueIcon);
+app.mount('#app');
