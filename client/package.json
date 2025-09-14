@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@arco-design/web-vue": "^2.57.0",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "concurrently": "^8.2.0",
     "typescript": "^5.9.2",
